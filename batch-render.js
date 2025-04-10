@@ -10,7 +10,7 @@ program
   .option('-f, --format <format>', 'video format (mp4 or webm)', 'webm')
   .option('-r, --fps <number>', 'frames per second', '30')
   .option('-t, --total-frames <number>', 'total number of frames to render', '60')
-  .option('-o, --output-dir <path>', 'output directory for the video files', __dirname)
+  .option('-o, --output-dir <path>', 'output directory for the video files', 'videos')
   .option('-d, --device-scale-factor <number>', 'device scale factor for higher resolution output', '2')
   .option('-c, --max-concurrent <number>', 'maximum number of concurrent renders', '8')
   .parse(process.argv);
