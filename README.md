@@ -2,15 +2,6 @@
 
 A command-line tool for capturing high-quality screenshots of p5.js sketches using Puppeteer.
 
-## Features
-
-- Capture full-page screenshots of any web URL
-- Customize viewport dimensions
-- Adjust device scale factor for higher resolution output
-- Specify output directory and filename
-- Support for both PNG and JPEG formats
-- Configurable viewport dimensions
-
 ## Prerequisites
 
 - Node.js (v12 or higher)
