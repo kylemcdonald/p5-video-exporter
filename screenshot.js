@@ -10,7 +10,7 @@ program
   .option('-r, --fps <number>', 'frames per second', '30')
   .option('-t, --total-frames <number>', 'total number of frames to render', '60')
   .option('-o, --output-dir <path>', 'output directory for the video file', __dirname)
-  .option('-d, --device-scale-factor <number>', 'device scale factor for higher resolution output', '1')
+  .option('-d, --device-scale-factor <number>', 'device scale factor for higher resolution output', '2')
   .parse(process.argv);
 
 const options = program.opts();
