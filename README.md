@@ -1,6 +1,6 @@
 # p5-video-exporter
 
-A command-line tool for capturing high-quality screenshots of web pages using Puppeteer. This tool is particularly useful for creating consistent, high-resolution screenshots of web content for documentation, testing, or archival purposes.
+A command-line tool for capturing high-quality screenshots of p5.js sketches using Puppeteer.
 
 ## Features
 
@@ -33,48 +33,40 @@ npm install
 
 Basic usage:
 ```bash
-node screenshot.js -u "https://example.com" -o "screenshot.png"
+node screenshot.js -s "path/to/sketch.js" -o "output_directory"
 ```
 
 ### Command Line Options
 
-- `-u, --url <url>`: URL of the webpage to capture (required)
-- `-o, --output <path>`: Output file path (required)
-- `-w, --width <number>`: Viewport width (default: 800)
-- `-h, --height <number>`: Viewport height (default: 600)
-- `-d, --device-scale-factor <number>`: Device scale factor for higher resolution (default: 1)
-- `-f, --format <format>`: Output format (png or jpeg, default: png)
+- `-s, --sketch <path>`: Path to the sketch file (required)
+- `-f, --format <format>`: Video format (mp4 or webm, default: webm)
+- `-r, --fps <number>`: Frames per second (default: 30)
+- `-t, --total-frames <number>`: Total number of frames to render (default: 60)
+- `-o, --output-dir <path>`: Output directory for the video file (default: current directory)
+- `-d, --device-scale-factor <number>`: Device scale factor for higher resolution output (default: 1)
 
 ### Examples
 
-1. Capture a basic screenshot:
+1. Basic usage with a sketch file:
 ```bash
-node screenshot.js -u "https://example.com" -o "example.png"
+node screenshot.js -s "my-sketch.js"
 ```
 
-2. Capture a high-resolution screenshot:
+2. Specify output format and directory:
 ```bash
-node screenshot.js -u "https://example.com" -o "example.png" -d 2
+node screenshot.js -s "my-sketch.js" -f mp4 -o "videos"
 ```
 
-3. Capture a screenshot with custom dimensions:
+3. Customize frame rate and total frames:
 ```bash
-node screenshot.js -u "https://example.com" -o "example.png" -w 1920 -h 1080
+node screenshot.js -s "my-sketch.js" -r 60 -t 120
 ```
 
-4. Capture a JPEG screenshot:
+4. Increase resolution with device scale factor:
 ```bash
-node screenshot.js -u "https://example.com" -o "example.jpg" -f jpeg
+node screenshot.js -s "my-sketch.js" -d 2
 ```
 
 ## Output
 
-The script will generate a screenshot file at the specified output path. The image will be saved in either PNG or JPEG format, depending on the file extension or format specified.
-
-## License
-
-MIT
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. 
+The script will generate a video file in the specified output directory. The video will be saved in either MP4 or WebM format, depending on the format specified.
