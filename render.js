@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { exec } = require("child_process");
 const { program } = require('commander');
+const os = require('os');
 
 program
   .requiredOption('-s, --sketch <path>', 'path to the sketch file')
@@ -31,8 +32,9 @@ const outputVideo = path.join(
   const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
 
-  const outputDir = path.join(__dirname, "frames");
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
+  // Create a temporary directory with a random name
+  const tempDir = path.join(os.tmpdir(), `p5-video-exporter-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`);
+  fs.mkdirSync(tempDir);
 
   await page.setViewport({
     width: 400,
@@ -90,7 +92,7 @@ const outputVideo = path.join(
       redraw();
     }, i, currentTime);
 
-    const framePath = path.join(outputDir, `frame_${String(i).padStart(4, "0")}.png`);
+    const framePath = path.join(tempDir, `frame_${String(i).padStart(4, "0")}.png`);
     await canvas.screenshot({ path: framePath });
   }
 
@@ -104,7 +106,7 @@ const outputVideo = path.join(
   console.log("Starting video compression and encoding...");
   const compressionStartTime = Date.now();
   
-  const baseCommand = `ffmpeg -y -framerate ${options.fps} -i ${path.join(outputDir, "frame_%04d.png")}`;
+  const baseCommand = `ffmpeg -y -framerate ${options.fps} -i ${path.join(tempDir, "frame_%04d.png")}`;
   const ffmpegCommand = options.format === 'webm'
     ? `${baseCommand} -c:v libvpx-vp9 -crf 30 -b:v 0 -pix_fmt yuv420p ${outputVideo}`
     : `${baseCommand} -c:v libx264 -crf 23 -pix_fmt yuv420p ${outputVideo}`;
@@ -120,27 +122,10 @@ const outputVideo = path.join(
     console.log(`Video compression completed in ${compressionDuration.toFixed(2)} seconds`);
     console.log(`Total processing time: ${((renderDuration + compressionDuration)).toFixed(2)} seconds`);
     
-    // Delete all frame images
-    fs.readdir(outputDir, (err, files) => {
-      if (err) {
-        console.error(`Error reading directory: ${err}`);
-        return;
-      }
-      
-      for (const file of files) {
-        if (file.endsWith('.png')) {
-          fs.unlink(path.join(outputDir, file), err => {
-            if (err) console.error(`Error deleting ${file}: ${err}`);
-          });
-        }
-      }
-      console.log("Frame images deleted successfully!");
-      
-      // Remove the frames directory
-      fs.rmdir(outputDir, err => {
-        if (err) console.error(`Error removing frames directory: ${err}`);
-        else console.log("Frames directory removed successfully!");
-      });
+    // Delete all frame images and remove the temporary directory
+    fs.rm(tempDir, { recursive: true, force: true }, (err) => {
+      if (err) console.error(`Error removing temporary directory: ${err}`);
+      else console.log("Temporary directory removed successfully!");
     });
   });
 })();

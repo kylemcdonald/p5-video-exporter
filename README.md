@@ -1,63 +1,95 @@
-# p5-video-exporter
+# p5.js Video Exporter
 
-A command-line tool for capturing high-quality screenshots of p5.js sketches using Puppeteer.
+A tool to export p5.js sketches as videos using Puppeteer and ffmpeg.
 
 ## Prerequisites
 
-- Node.js (v12 or higher)
-- npm (Node Package Manager)
+- Node.js (v14 or higher)
+- ffmpeg installed and available in your PATH
+- Puppeteer (will be installed as a dependency)
 
 ## Installation
 
-1. Clone this repository:
-```bash
-git clone https://github.com/yourusername/p5-video-exporter.git
-cd p5-video-exporter
-```
-
+1. Clone this repository
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 ## Usage
 
-Basic usage:
+### Single Sketch Rendering
+
+To render a single p5.js sketch as a video:
+
 ```bash
-node screenshot.js -s "path/to/sketch.js" -o "output_directory"
+node render.js -s path/to/sketch.js [options]
 ```
 
-### Command Line Options
+#### Options:
 
 - `-s, --sketch <path>`: Path to the sketch file (required)
 - `-f, --format <format>`: Video format (mp4 or webm, default: webm)
 - `-r, --fps <number>`: Frames per second (default: 30)
 - `-t, --total-frames <number>`: Total number of frames to render (default: 60)
 - `-o, --output-dir <path>`: Output directory for the video file (default: current directory)
-- `-d, --device-scale-factor <number>`: Device scale factor for higher resolution output (default: 1)
+- `-d, --device-scale-factor <number>`: Device scale factor for higher resolution output (default: 2)
 
-### Examples
+### Batch Rendering
 
-1. Basic usage with a sketch file:
+To render multiple p5.js sketches in a directory:
+
 ```bash
-node screenshot.js -s "my-sketch.js"
+node batch-render.js -s path/to/sketches/directory [options]
 ```
 
-2. Specify output format and directory:
+#### Options:
+
+- `-s, --sketches-dir <path>`: Directory containing sketch files (required)
+- `-f, --format <format>`: Video format (mp4 or webm, default: webm)
+- `-r, --fps <number>`: Frames per second (default: 30)
+- `-t, --total-frames <number>`: Total number of frames to render (default: 60)
+- `-o, --output-dir <path>`: Output directory for the video files (default: current directory)
+- `-d, --device-scale-factor <number>`: Device scale factor for higher resolution output (default: 2)
+- `-c, --max-concurrent <number>`: Maximum number of concurrent renders (default: 8)
+
+### Viewing Rendered Sketches
+
+To view all rendered videos in a web browser:
+
 ```bash
-node screenshot.js -s "my-sketch.js" -f mp4 -o "videos"
+node view-sketches.js [options]
 ```
 
-3. Customize frame rate and total frames:
+#### Options:
+
+- `-d, --directory <dir>`: Directory containing rendered videos (default: 'videos')
+- `-p, --port <number>`: Port to serve the webpage on (default: 3000)
+
+This will start a local web server that displays all rendered videos in a grid layout. Videos will autoplay (muted) when the page loads.
+
+## Examples
+
+### Render a single sketch
+
 ```bash
-node screenshot.js -s "my-sketch.js" -r 60 -t 120
+node render.js -s my-sketch.js -f webm -r 30 -t 60 -o ./videos
 ```
 
-4. Increase resolution with device scale factor:
+### Batch render multiple sketches
+
 ```bash
-node screenshot.js -s "my-sketch.js" -d 2
+node batch-render.js -s ./sketches -f webm -r 30 -t 60 -o ./videos -c 4
 ```
 
-## Output
+## How it works
 
-The script will generate a video file in the specified output directory. The video will be saved in either MP4 or WebM format, depending on the format specified.
+1. The script launches a headless browser using Puppeteer
+2. It loads the p5.js sketch in the browser
+3. It captures frames at the specified frame rate
+4. It uses ffmpeg to compile the frames into a video
+
+## License
+
+MIT
